@@ -1,0 +1,34 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+`mtz-marked-editor`
+
+
+@demo demo/index.html
+-->
+
+<dom-module id="mtz-marked-editor">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]!</h2>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'mtz-marked-editor',
+
+      properties: {
+        prop1: {
+          type: String,
+          value: 'mtz-marked-editor',
+        },
+      },
+
+    });
+  </script>
+</dom-module>
