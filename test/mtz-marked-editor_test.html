@@ -19,10 +19,300 @@
     </test-fixture>
 
     <script>
-      suite('mtz-marked-editor', function() {
-        test('instantiating the element works', function() {
-          var element = fixture('basic');
-          assert.equal(element.is, 'mtz-marked-editor');
+      describe('mtz-marked-editor', () => {
+        let el;
+        const createCustomEvent = (eventName, detail = {}) => {
+          const e = new CustomEvent(eventName, { detail });
+          e.stopPropagation = sinon.spy();
+          return e;
+        }
+
+        it('instantiating the element works', () => {
+          el = fixture('basic');
+          assert.equal(el.is, 'mtz-marked-editor');
+        });
+
+        /* Lifecycle Events */
+        describe('attached()', () => {
+          beforeEach(() => {
+            el = fixture('basic');
+            el.detached();
+            el.addEventListener = sinon.spy();
+          });
+          it('should listen for marked-command', () => {
+            el.__handleCommand = sinon.spy();
+            el.attached();
+            let args = el.addEventListener.args[0];
+
+            expect(args[0]).to.equal('marked-command');
+            args[1]();
+            expect(el.__handleCommand).to.have.been.called;
+          });
+          it('should listen for register-keybinding', () => {
+            el.__handleRegisterKeybinding = sinon.spy();
+            el.attached();
+            let args = el.addEventListener.args[1];
+
+            expect(args[0]).to.equal('register-keybinding');
+            args[1]();
+            expect(el.__handleRegisterKeybinding).to.have.been.called;
+          });
+          it('should listen for deregister-keybinding', () => {
+              el.__handleDeregisterKeybinding = sinon.spy();
+            el.attached();
+            let args = el.addEventListener.args[2];
+
+            expect(args[0]).to.equal('deregister-keybinding');
+            args[1]();
+            expect(el.__handleDeregisterKeybinding).to.have.been.called;
+          });
+        });
+        describe('detached()', () => {
+          beforeEach(() => {
+            el = fixture('basic');
+            el.removeEventListener = sinon.spy();
+          });
+          it('should remove listener for marked-command', () => {
+            el.__handleCommand = sinon.spy();
+            el.detached();
+            let args = el.removeEventListener.args[0];
+
+            expect(args[0]).to.equal('marked-command');
+            args[1]();
+            expect(el.__handleCommand).to.have.been.called;
+          });
+          it('should remove listener for register-keybinding', () => {
+            el.__handleRegisterKeybinding = sinon.spy();
+            el.detached();
+            let args = el.removeEventListener.args[1];
+
+            expect(args[0]).to.equal('register-keybinding');
+            args[1]();
+            expect(el.__handleRegisterKeybinding).to.have.been.called;
+          });
+          it('should remove listener for deregister-keybinding', () => {
+            el.__handleDeregisterKeybinding = sinon.spy();
+            el.detached();
+            let args = el.removeEventListener.args[2];
+
+            expect(args[0]).to.equal('deregister-keybinding');
+            args[1]();
+            expect(el.__handleDeregisterKeybinding).to.have.been.called;
+          });
+        });
+        describe('ready()', () => {
+          beforeEach(() => {
+            el = fixture('basic');
+          });
+          it('should initialize the CodeMirror editor', () => {
+            sinon.spy(CodeMirror, 'fromTextArea');
+            el.ready();
+
+            expect(CodeMirror.fromTextArea)
+              .to.have.been.calledWith(
+                el.$.content, {
+                  mode: 'markdown',
+                  tabSize: '2',
+                  indentWithTabs: true,
+                  lineNumbers: false,
+                  autofocus: true,
+                });
+            expect(el.editor).to.be.instanceof(Object);
+          });
+        });
+
+        /* Observers */
+        describe('__keyBindingsChanged(editor, keyBindings)', () => {
+          it('should not update extraKeys when editor is not set', () => {
+            let keyBinding = {'Ctrl-B': sinon.spy()};
+            el.editor.setOption = sinon.spy();
+            el.__keyBindingsChanged(undefined, keyBinding);
+            expect(el.editor.setOption).not.to.have.been.called;
+          });
+          it('should not update extraKeys when keyBindings is not set', () => {
+            el.editor.setOption = sinon.spy();
+            el.__keyBindingsChanged(el.editor);
+            expect(el.editor.setOption).not.to.have.been.called;
+          });
+          it('should update extraKeys when editor and keyBindings are set', () => {
+            let keyBinding = {'Ctrl-B': sinon.spy()};
+            el.editor.setOption = sinon.spy();
+            el.__keyBindingsChanged(el.editor, keyBinding);
+
+            let args = el.editor.setOption.args[0];
+            expect(args[0]).to.equal('extraKeys');
+            args[1]['Ctrl-B']();
+            expect(keyBinding['Ctrl-B']).to.have.been.called;
+          });
+          it('should update extraKeys with new keyBindings', () => {
+            let keyBinding = {'Ctrl-B': sinon.spy()};
+            el.editor.setOption = sinon.spy();
+            sinon.stub(el.editor, 'getOption').withArgs('extraKeys').returns({
+              'Ctrl-I': sinon.spy()
+            });
+            el.__keyBindingsChanged(el.editor, keyBinding);
+
+            let args = el.editor.setOption.args[0];
+            expect(args[0]).to.equal('extraKeys');
+            args[1]['Ctrl-B']();
+            expect(keyBinding['Ctrl-B']).to.have.been.called;
+            args[1]['Ctrl-I']();
+            expect(args[1]['Ctrl-I']).to.have.been.called;
+          });
+        });
+
+        /* Main Functions */
+        describe('_toggleBlock(cm, name, start_tag, [end_tag])', () => {
+          describe('bold', () => {
+            describe('When text is highlighted', () => {
+              it('should wrap the word with syntax', () => {
+
+              });
+            });
+            describe('When cursor is at a position', () => {
+              it('should insert the syntax', () => {
+
+              });
+              it('should put the cursor in between the wrapping syntax', () => {
+
+              });
+            });
+            describe('When text is highlighted and already wrapped with syntax', () => {
+              it('should remove the syntax and keep the text', () => {
+
+              });
+            });
+            describe('When no text is between the syntax', () => {
+              it('should remove the syntax', () => {
+
+              });
+            });
+          })
+        });
+        describe('_toggleLine(cm, name, syntax, replace)', () => {
+
+        });
+
+        /* Supporting Functions */
+        describe('__getState(cm, pos)', () => {
+
+        });
+
+        /* Event Handlers */
+        describe('__handleCommand(event)', () => {
+          let event;
+
+
+          describe('`line` command type', () => {
+            beforeEach(() => {
+              el._toggleLine = sinon.spy();
+              event = createCustomEvent('marked-command', {
+                type: 'line',
+                name: 'quote',
+                syntax: ['> '],
+                replace: '^(\s*)\>\s+'
+              });
+            });
+            it('should stop propagation', () => {
+              el.dispatchEvent(event);
+              expect(event.stopPropagation).to.have.been.called;
+            });
+            it('should trigger the function associated with the type', () => {
+              el.dispatchEvent(event);
+              expect(el._toggleLine).to.have.been.called;
+              const args = el._toggleLine.firstCall.args;
+              const eventDetail = event.detail;
+              expect(args[0]).to.be.instanceOf(Object);
+              expect(args[1]).to.equal(eventDetail.name);
+              expect(args[2]).to.equal(eventDetail.syntax[0]);
+              expect(args[3]).to.equal(eventDetail.replace);
+            });
+          });
+          describe('`block` command type', () => {
+            beforeEach(() => {
+              el._toggleBlock = sinon.spy();
+            });
+            it('should stop propagation', () => {
+              event = createCustomEvent('marked-command', {
+                type: 'block',
+                name: 'bold',
+                syntax: ['**']
+              });
+              el.dispatchEvent(event);
+              expect(event.stopPropagation).to.have.been.called;
+            });
+            it('should trigger the function associated with the type', () => {
+              event = createCustomEvent('marked-command', {
+                type: 'block',
+                name: 'bold',
+                syntax: ['**']
+              });
+              el.dispatchEvent(event);
+              expect(el._toggleBlock).to.have.been.called;
+              const args = el._toggleBlock.firstCall.args;
+              const eventDetail = event.detail;
+              expect(args[0]).to.be.instanceOf(Object);
+              expect(args[1]).to.equal(eventDetail.name);
+              expect(args[2]).to.equal(eventDetail.syntax[0]);
+              expect(args[3]).not.to.be.ok;
+            });
+            it('should trigger the function associated with the type', () => {
+              event = createCustomEvent('marked-command', {
+                type: 'block',
+                name: 'bold',
+                syntax: ['**', '***']
+              });
+              el.dispatchEvent(event);
+              expect(el._toggleBlock).to.have.been.called;
+              const args = el._toggleBlock.firstCall.args;
+              const eventDetail = event.detail;
+              expect(args[0]).to.be.instanceOf(Object);
+              expect(args[1]).to.equal(eventDetail.name);
+              expect(args[2]).to.equal(eventDetail.syntax[0]);
+              expect(args[3]).to.equal(eventDetail.syntax[1]);
+            });
+          });
+        });
+        describe('__handleRegisterKeybinding(event)', () => {
+          let event, keyBinding;
+          beforeEach(() => {
+            keyBinding = {
+              'Ctrl-I': sinon.spy()
+            };
+            event = createCustomEvent('register-keybinding', { keyBinding });
+          });
+          it('should stop propagation', () => {
+            el.dispatchEvent(event);
+            expect(event.stopPropagation).to.have.been.called;
+          });
+          it('should update the keyBindings', () => {
+            el.keyBindings = {
+              'Ctrl-B': 'existing'
+            };
+            el.dispatchEvent(event);
+            expect(el.keyBindings).to.deep.equal(Object.assign({}, el.keyBindings, keyBinding));
+            el.keyBindings['Ctrl-I']();
+            expect(el.keyBindings['Ctrl-I']).to.have.been.called;
+            expect(el.keyBindings['Ctrl-B']).to.equal('existing');
+          });
+        });
+        describe('__handleDeregisterKeybinding(event)', () => {
+          let event, keyBinding;
+          beforeEach(() => {
+            keyBinding = 'Ctrl-I';
+            event = createCustomEvent('deregister-keybinding', { keyBinding });
+          });
+          it('should stop propagation', () => {
+            el.dispatchEvent(event);
+            expect(event.stopPropagation).to.have.been.called;
+          });
+          it('should update the keyBindings', () => {
+            el.keyBindings = {
+              'Ctrl-I': 'existing'
+            };
+            el.dispatchEvent(event);
+            expect(el.keyBindings).to.deep.equal({});
+          });
         });
       });
     </script>

@@ -1,0 +1,76 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<script>
+  window.mtz = window.mtz || {};
+
+  /**
+   * `mtz.MarkedControlBehavior`
+   * Used to create a marked control for adding a WYSIWYG feel for controlling
+   * syntax.
+   *
+   * @polymerBehavior mtz.MarkedControlBehavior
+   */
+  mtz.MarkedControlBehavior = {
+    properties: {
+      name: String,
+      type: {
+        type: String,
+        value: 'block' // block, line, fullscreen
+      },
+      syntax: Array,
+      replace: String,
+      keyBinding: {
+        type: String,
+        observer: '__updateKeybinding'
+      }
+    },
+    ready() {
+      this.__isMac = /Mac/.test(navigator.platform);
+    },
+    attached() {
+      this.__registerKeybinding();
+    },
+    detached() {
+      this.__deregisterKeybinding();
+    },
+    toggle() {
+      this.dispatchEvent(new CustomEvent('marked-command', {
+        detail: this,
+        bubbles: true,
+        composed: true
+      }));
+    },
+    __fixKeybinding(keyBinding) {
+      return keyBinding && this.__isMac ? keyBinding.replace('Ctrl', 'Cmd') : keyBinding;
+    },
+    __registerKeybinding(keyBinding = this.keyBinding) {
+      if (!keyBinding) { return; }
+      this.dispatchEvent(new CustomEvent('register-keybinding', {
+        detail: {
+          keyBinding: {
+            [this.__fixKeybinding(keyBinding)]: this.toggle.bind(this)
+          }
+        },
+        bubbles: true,
+        composed: true
+      }));
+    },
+    __deregisterKeybinding(keyBinding = this.keyBinding) {
+      this.dispatchEvent(new CustomEvent('deregister-keybinding', {
+        detail: {
+          keyBinding: this.__fixKeybinding(keyBinding)
+        },
+        bubbles: true,
+        composed: true
+      }));
+    },
+    __updateKeybinding(keyBinding, prevKeyBinding) {
+      if (prevKeyBinding && prevKeyBinding.length) {
+        this.__deregisterKeybinding(prevKeyBinding);
+      }
+      if (keyBinding && keyBinding.length) {
+        this.__registerKeybinding(keyBinding);
+      }
+    }
+  };
+</script>

@@ -2,7 +2,8 @@
   "name": "mtz-marked-editor",
   "main": "mtz-marked-editor.html",
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.9 || ^2.0"
+    "polymer": "Polymer/polymer#^1.9 || ^2.0",
+    "codemirror-imports": "MaritzSTL/codemirror-imports#^1.0.0-prerelease.1"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0 || ^2.0",
@@ -13,7 +14,8 @@
   "variants": {
     "1.x": {
       "dependencies": {
-        "polymer": "Polymer/polymer#^1.9"
+        "polymer": "Polymer/polymer#^1.9",
+        "codemirror-imports": "MaritzSTL/codemirror-imports#^1.0.0-prerelease.1"
       },
       "devDependencies": {
         "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",

@@ -1,4 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../codemirror-imports/codemirror.html">
+<link rel="import" href="../codemirror-imports/mode/markdown/markdown.html">
+<!-- <link rel="import" href="../codemirror-imports/theme/elegant.html"> -->
 
 <!--
 `mtz-marked-editor`
@@ -9,26 +12,182 @@
 
 <dom-module id="mtz-marked-editor">
   <template>
-    <style>
+    <style id="styles" include="codemirror">
       :host {
         display: block;
       }
     </style>
-    <h2>Hello [[prop1]]!</h2>
+    <slot name="controls"></slot>
+    <textarea id="content"></textarea>
+    <button on-click="_getState">GET STATE</button>
   </template>
 
   <script>
     Polymer({
-
       is: 'mtz-marked-editor',
-
       properties: {
-        prop1: {
-          type: String,
-          value: 'mtz-marked-editor',
-        },
+        editor: Object,
+        keyBindings: {
+          type: Object,
+          value() {
+            return {};
+          }
+        }
+      },
+      observers: [
+        '__keyBindingsChanged(editor, keyBindings, keyBindings.*)'
+      ],
+
+      /* Lifecycle Events */
+      attached() {
+        this.addEventListener('marked-command', this.__handleCommand.bind(this));
+        this.addEventListener('register-keybinding', this.__handleRegisterKeybinding.bind(this));
+        this.addEventListener('deregister-keybinding', this.__handleDeregisterKeybinding.bind(this));
+      },
+      detached() {
+        this.removeEventListener('marked-command', this.__handleCommand);
+        this.removeEventListener('register-keybinding', this.__handleRegisterKeybinding);
+        this.removeEventListener('deregister-keybinding', this.__handleDeregisterKeybinding);
+      },
+      ready() {
+        this.editor = CodeMirror.fromTextArea(this.$.content, {
+          mode: 'markdown',
+          // theme: 'paper',
+          tabSize: '2',
+          indentWithTabs: true,
+          lineNumbers: false,
+          autofocus: true,
+        });
       },
 
+      /* Main Functions */
+      _toggleBlock(cm, name, start_tag, end_tag = start_tag) {
+        const state = this.__getState(cm);
+
+        let text;
+        let start = start_tag;
+        let end = end_tag;
+
+        const startPoint = cm.getCursor('start');
+        const endPoint = cm.getCursor('end');
+
+        if (state[name]) {
+          text = cm.getLine(startPoint.line);
+          start = text.slice(0, startPoint.ch);
+          end = text.slice(startPoint.ch);
+          let startRegex = new RegExp("^(.*)?(\*|\_){" + start_tag.length + "}(\S+.*)?$", "g")
+          start = start.replace(startRegex, '$1$3');
+          let endRegex = new RegExp("^(.*\S+)?(\*|\_){" + end_tag.length + "}(\s+.*)?$", "g")
+          end = end.replace(endRegex, '$1$3');
+          startPoint.ch -= start_tag.length;
+          endPoint.ch -= end_tag.length;
+          cm.setLine(startPoint.line, start + end);
+        } else {
+          text = cm.getSelection();
+          cm.replaceSelection(start + text + end);
+
+          startPoint.ch += start_tag.length;
+          endPoint.ch += end_tag.length;
+        }
+        cm.setSelection(startPoint, endPoint);
+        cm.focus();
+      },
+      _toggleLine(cm, name, syntax, replace) {
+        const state = this.__getState(cm);
+        const startPoint = cm.getCursor('start');
+        const endPoint = cm.getCursor('end');
+
+        for (var i = startPoint.line; i <= endPoint.line; i++) {
+          (function(i) {
+            let text = cm.getLine(i);
+            let line = cm.getLineHandle(i);
+            let startPos = startPoint;
+            startPos.line = i;
+            startPos.ch = 0;
+            let endPos = Object.assign({}, startPos);
+            endPos.ch = text.length;
+
+            if (state[name]) {
+              text = text.replace(new RegExp(replace), '$1');
+            } else {
+              text = `${syntax}${text}`;
+            }
+            cm.replaceRange(text, endPos, startPos);
+          })(i);
+        }
+        cm.focus();
+      },
+      /** TODO: REMOVE */
+      _getState(e) {
+        console.log(this.__getState(this.editor));
+      },
+
+      /* Supporting Functions */
+      __getState(cm, pos) {
+        pos = pos || cm.getCursor('start');
+        delete pos.sticky;
+        delete pos.xRel;
+        const state = cm.getTokenAt(pos);
+        if (!state.type) return {};
+
+        const types = state.type.split(' ');
+
+        let ret = {}, type, text;
+        for (let i = 0; i < types.length; i++) {
+          data = types[i];
+          if (data === 'strong') {
+            ret.bold = true;
+          } else if (data === 'variable-2') {
+            text = cm.getLine(pos.line);
+            if (/^\s*\d+\.\s/.test(text)) {
+              ret['ordered-list'] = true;
+            } else {
+              ret['unordered-list'] = true;
+            }
+          } else if (data === 'atom') {
+            ret.quote = true;
+          } else if (data === 'em') {
+            ret.italic = true;
+          }
+        }
+        return ret;
+      },
+
+      /* Event Handlers */
+      __handleCommand(e) {
+        e.stopPropagation();
+
+        const detail = e.detail;
+
+        switch(detail.type) {
+          case 'line':
+            this._toggleLine(this.editor, detail.name, detail.syntax[0], detail.replace);
+            break;
+          case 'block':
+            this._toggleBlock(this.editor, detail.name, ...detail.syntax);
+            break;
+          // case ''
+        }
+      },
+      __handleRegisterKeybinding(e) {
+        e.stopPropagation();
+        this.keyBindings = Object.assign({}, this.keyBindings, e.detail.keyBinding);
+      },
+      __handleDeregisterKeybinding(e) {
+        e.stopPropagation();
+        if (e.detail.keyBinding) {
+          delete this.keyBindings[e.detail.keyBinding];
+          this.set('keyBindings', this.keyBindings);
+        }
+      },
+
+      /* Observers */
+      __keyBindingsChanged(editor, keyBindings) {
+        if (!editor || !keyBindings) { return; }
+        editor.setOption(
+          'extraKeys',
+          Object.assign((editor.getOption('extraKeys') || {}), keyBindings));
+      }
     });
   </script>
 </dom-module>

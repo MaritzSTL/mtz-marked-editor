@@ -10,7 +10,9 @@
 
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+
     <link rel="import" href="../mtz-marked-editor.html">
+    <link rel="import" href="../mtz-marked-control.html">
 
     <style is="custom-style" include="demo-pages-shared-styles">
     </style>
@@ -20,7 +22,88 @@
       <h3>Basic mtz-marked-editor demo</h3>
       <demo-snippet>
         <template>
-          <mtz-marked-editor></mtz-marked-editor>
+          <mtz-marked-editor>
+            <div slot="controls">
+              <mtz-marked-control
+                name="strong"
+                type="block"
+                syntax='["**"]'
+                key-binding="Ctrl-B">
+                <button><strong>B</strong></button>
+              </mtz-marked-control>
+              <mtz-marked-control
+                name="italic"
+                type="block"
+                syntax='["*"]'
+                key-binding="Ctrl-I">
+                <button><em>I</em></button>
+              </mtz-marked-control>
+              <mtz-marked-control
+                name="unordered-list"
+                type="line"
+                syntax='["- "]'
+                replace="^(\s*)(\*|\-|\+)\s+">
+                <button>UL</button>
+              </mtz-marked-control>
+              <mtz-marked-control
+                name="ordered-list"
+                type="line"
+                syntax='["1. "]'
+                replace="^(\s*)\d+\.\s+">
+                <button>OL</button>
+              </mtz-marked-control>
+              <mtz-marked-control
+                name="hr"
+                type="line"
+                syntax='["\r\n---\r\n"]'
+                replace="^(\s*)(\-\-\-|\*\*\*|\_\_\_)\s+">
+                <button>HR</button>
+              </mtz-marked-control>
+              <mtz-marked-control
+                name="quote"
+                type="line"
+                syntax='["> "]'
+                replace="^(\s*)\>\s+">
+                <button>&gt;</button>
+              </mtz-marked-control>
+              <mtz-marked-control
+                name="code"
+                type="block"
+                syntax='["`"]'>
+                <button><em>code</em></button>
+              </mtz-marked-control>
+              <mtz-marked-control
+                name="codefence"
+                type="block"
+                syntax='["```\r\n", "\r\n```"]'>
+                <button><em>code fence</em></button>
+              </mtz-marked-control>
+              <mtz-marked-control
+                name="strikethrough"
+                type="block"
+                syntax='["~~"]'>
+                <button><span style="text-decoration: line-through;">word</span></button>
+              </mtz-marked-control>
+              <mtz-marked-control
+                name="header 1"
+                type="line"
+                syntax='["# "]'>
+                <button>#</button>
+              </mtz-marked-control>
+              <mtz-marked-control
+                name="header 2"
+                type="line"
+                syntax='["## "]'>
+                <button>##</button>
+              </mtz-marked-control>
+              <mtz-marked-control
+                name="header 3"
+                type="line"
+                syntax='["### "]'>
+                <button>###</button>
+              </mtz-marked-control>
+            </div>
+          </mtz-marked-editor>
         </template>
       </demo-snippet>
     </div>

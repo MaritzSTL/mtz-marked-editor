@@ -1,0 +1,30 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="mtz-marked-control-behavior.html">
+
+<!--
+`mtz-marked-editor`
+
+
+@demo demo/index.html
+-->
+
+<dom-module id="mtz-marked-control">
+  <template>
+    <style id="styles">
+      :host {
+        display: inline-block;
+      }
+    </style>
+    <span on-click="toggle">
+      <slot></slot>
+    </span>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'mtz-marked-control',
+      behaviors: [mtz.MarkedControlBehavior]
+    });
+  </script>
+</dom-module>
