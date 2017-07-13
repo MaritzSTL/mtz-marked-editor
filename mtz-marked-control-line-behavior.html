@@ -1,0 +1,99 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="mtz-marked-control-behavior.html">
+
+<script>
+  window.mtz = window.mtz || {};
+
+  /**
+   * Handles inserting a prefix on the lines selected.
+   * 
+   * @polymerBehavior
+   */
+  const MarkedControlLineBehaviorImpl = {
+    properties: {
+      syntaxPrefix: String // Must implement
+    },
+    /**
+     * Toggles a syntax prefix at the start of selected lines
+     * @param {MouseEvent|KeyboardEvent} event
+     * @protected
+     */
+    _handleCommand(event) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      const editor = this.__editor;
+      let selected = editor.getSelection(),
+          content = editor.getContent();
+
+      
+      // TODO: Move to editor
+      // Get lines
+      let lines = content.match(/(?:.*)[\n|\r\n]?/g).slice(0, -1);
+      if (lines.length === 0) {
+        lines = [''];
+      }
+
+      // Get selected lines
+      const selectedLines = [];
+      let accumulator = 0;
+      lines.every((line) => {
+        accumulator += line.length;
+        if (accumulator <= selected.start) {
+          return true;
+        }
+        
+        selectedLines.push({
+          start: accumulator - line.length,
+          end:accumulator,
+          length: line.length,
+          text: line
+        });
+
+        return (accumulator <= selected.end);
+      });
+
+      // Toggle syntax on each line
+      let offset = 0,
+          cursor = 0,
+          direction = 0;
+
+      if (!selectedLines[0]) {
+        return;
+      }
+      
+      const toggleOff = selectedLines[0].text.startsWith(this.syntaxPrefix);
+      selectedLines.forEach((line, i) => {
+        cursor = line.start;
+
+        if (toggleOff && line.text.startsWith(this.syntaxPrefix)) {
+          cursor -= offset;
+          direction = -1;
+          editor.setSelection(cursor, cursor + this.syntaxPrefix.length);
+          editor.replaceSelection('');
+        } else if (!toggleOff) {
+          cursor += offset;
+          direction = 1;
+          editor.setSelection(cursor, cursor);
+          editor.replaceSelection(this.syntaxPrefix);
+        }
+
+        offset += this.syntaxPrefix.length;
+
+        // Update line start and end positions
+        const lineDiff = direction && direction * offset;
+        if (i === selectedLines.length) {
+          line.start += lineDiff;
+          line.start = line.start > 0 ? line.start : 0;
+        }
+        line.end += lineDiff;
+        line.end = line.end > 0 ? line.end : 0;
+      });
+
+      editor.setSelection(selectedLines[0].start, selectedLines.pop().end);
+      editor.getTextarea().focus();
+    }
+  };
+
+  mtz.MarkedControlLineBehavior = [mtz.MarkedControlBehavior, MarkedControlLineBehaviorImpl];
+</script>
