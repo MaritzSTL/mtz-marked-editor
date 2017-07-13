@@ -7,9 +7,9 @@
   /**
    * Handles wrapping selected text wit ha syntax
    *
-   * @polymerBehavior
+   * @polymerBehavior mtz.MarkedControlWrapperBehavior
    */
-  const MarkedControlWrapperBehaviorImpl = {
+  mtz.MarkedControlWrapperBehaviorImpl = {
     properties: {
       syntaxPrefix: String, // Must implement
       syntaxSuffix: { // Optionally implement
@@ -48,6 +48,7 @@
     }
   };
 
-  mtz.MarkedControlWrapperBehavior = [mtz.MarkedControlBehavior, MarkedControlWrapperBehaviorImpl];
+  /* @polymerBehavior */
+  mtz.MarkedControlWrapperBehavior = [mtz.MarkedControlBehavior, mtz.MarkedControlWrapperBehaviorImpl];
 
 </script>

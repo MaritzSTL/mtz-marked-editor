@@ -7,9 +7,9 @@
   /**
    * Handles inserting a prefix on the lines selected.
    * 
-   * @polymerBehavior
+   * @polymerBehavior mtz.MarkedControlLineBehavior
    */
-  const MarkedControlLineBehaviorImpl = {
+  mtz.MarkedControlLineBehaviorImpl = {
     properties: {
       syntaxPrefix: String // Must implement
     },
@@ -61,7 +61,7 @@
       if (!selectedLines[0]) {
         return;
       }
-      
+
       const toggleOff = selectedLines[0].text.startsWith(this.syntaxPrefix);
       selectedLines.forEach((line, i) => {
         cursor = line.start;
@@ -95,5 +95,6 @@
     }
   };
 
-  mtz.MarkedControlLineBehavior = [mtz.MarkedControlBehavior, MarkedControlLineBehaviorImpl];
+  /* @polymerBehavior */
+  mtz.MarkedControlLineBehavior = [mtz.MarkedControlBehavior, mtz.MarkedControlLineBehaviorImpl];
 </script>
