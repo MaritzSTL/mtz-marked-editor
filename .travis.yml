@@ -12,7 +12,7 @@ install:
   - npm install -g polymer-cli
   - polymer install --variants
 before_script:
-  - polymer lint --rules polymer-2-hybrid --input *.html
+  - polymer lint --input *.html
 script:
   - xvfb-run polymer test
 #  - >-
