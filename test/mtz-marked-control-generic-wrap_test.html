@@ -150,6 +150,7 @@
               beforeEach(() => {
                 assertMsg = 'The quick **brown fox** jumps over the lazy dog';
                 parent.setSelection(10, 19);
+                parent.getTextarea().focus = sinon.spy();
                 element._handleCommand(evt);
               });
               it('should add the syntax wrapping the selected text', () => {
@@ -171,6 +172,7 @@
               beforeEach(() => {
                 assertMsg = 'The quick ****brown fox jumps over the lazy dog';
                 parent.setSelection(10, 10);
+                parent.getTextarea().focus = sinon.spy();
                 element._handleCommand(evt);
               });
               it('should add the syntax at the cursor', () => {
