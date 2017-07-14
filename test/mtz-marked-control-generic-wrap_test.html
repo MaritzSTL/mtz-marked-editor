@@ -103,6 +103,7 @@
                 baseMsg = 'The quick **brown fox** jumps over the lazy dog';
                 parent.setContent(baseMsg);
                 parent.setSelection(12, 21);
+                parent.getTextarea().focus = sinon.spy();
                 element._handleCommand(evt);
               });
               it('should remove the syntax', () => {
@@ -117,7 +118,7 @@
                 });
               });
               it('should focus the editor', () => {
-                expect(parent.querySelector('textarea:focus')).to.be.ok;
+                expect(parent.getTextarea().focus).to.have.been.called;
               });
             });
             describe('and no selection is made (cursor)', () => {
@@ -125,6 +126,7 @@
                 baseMsg = 'The quick ****brown fox jumps over the lazy dog';
                 parent.setContent(baseMsg);
                 parent.setSelection(12, 12);
+                parent.getTextarea().focus = sinon.spy();
                 element._handleCommand(evt);
               });
               it('should remove the syntax', () => {
@@ -139,7 +141,7 @@
                 });
               });
               it('should focus the editor', () => {
-                expect(parent.querySelector('textarea:focus')).to.be.ok;
+                expect(parent.getTextarea().focus).to.have.been.called;
               });
             });
           });
@@ -162,7 +164,7 @@
                 });
               });
               it('should focus the editor', () => {
-                expect(parent.querySelector(':focus')).to.be.ok;
+                expect(parent.getTextarea().focus).to.have.been.called;
               });
             });
              describe('and no selection is made (cursor)', () => {
@@ -183,7 +185,7 @@
                 });
               });
               it('should focus the editor', () => {
-                expect(parent.querySelector('textarea:focus')).to.be.ok;
+                expect(parent.getTextarea().focus).to.have.been.called;
               });
             });
           });
