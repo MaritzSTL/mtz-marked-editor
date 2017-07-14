@@ -110,12 +110,7 @@
                   expect(parent.getContent()).to.equal(assertMsg);
                 });
                 it('should have selected all the lines affected', () => {
-                  expect(parent.getSelection()).to.deep.equal({
-                    start: 0,
-                    end: 44,
-                    length: 44,
-                    text: assertMsg
-                  });
+                  expect(parent.getSelection().text).to.equal(assertMsg);
                 });
                 it('should focus the editor', () => {
                   expect(parent.querySelector('textarea:focus')).to.be.ok;
@@ -131,12 +126,7 @@
                   expect(parent.getContent()).to.equal(assertMsg);
                 });
                 it('should have selected the line affected', () => {
-                  expect(parent.getSelection()).to.deep.equal({
-                    start: 23,
-                    end: 46,
-                    length: 23,
-                    text: 'jumps over the lazy dog'
-                  });
+                  expect(parent.getSelection().text).to.equal('jumps over the lazy dog');
                 });
                 it('should focus the editor', () => {
                   expect(parent.querySelector('textarea:focus')).to.be.ok;
@@ -155,12 +145,7 @@
                 expect(parent.getContent()).to.equal(assertMsg);
               });
               it('should put the cursor where it was previously', () => {
-                expect(parent.getSelection()).to.deep.equal({
-                  start: 0,
-                  end: 21,
-                  length: 21,
-                  text: 'The quick brown fox \n'
-                });
+                expect(parent.getSelection().text).to.equal('The quick brown fox ');
               });
               it('should focus the editor', () => {
                 expect(parent.querySelector(':focus')).to.be.ok;
@@ -178,12 +163,7 @@
                 expect(parent.getContent()).to.equal(assertMsg);
               });
               it('should have the entire selected lines are selected', () => {
-                expect(parent.getSelection()).to.deep.equal({
-                  start: 0,
-                  end: 48,
-                  length: 48,
-                  text: assertMsg
-                });
+                expect(parent.getSelection().text).to.equal(assertMsg);
               });
               it('should focus the editor', () => {
                 expect(parent.querySelector(':focus')).to.be.ok;
@@ -199,15 +179,13 @@
                 expect(parent.getContent()).to.equal(assertMsg);
               });
               it('should put the cursor between the syntax prefix and suffix', () => {
-                expect(parent.getSelection()).to.deep.equal({
-                  start: 0,
-                  end: 23,
-                  length: 23,
-                  text: '> The quick brown fox \n'
-                });
+                expect(parent.getSelection().text).to.equal('> The quick brown fox ');
               });
-              it('should focus the editor', () => {
-                expect(parent.querySelector(':focus')).to.be.ok;
+              it('should focus the editor', (done) => {
+                flush(() => {
+                  expect(parent.querySelector(':focus')).to.be.ok;
+                  done();
+                });
               });
             });
           });

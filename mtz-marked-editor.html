@@ -16,7 +16,7 @@
         display: block;
       }
     </style>
-    
+
       <slot name="controls"></slot>
       <slot name="textarea"></slot>
       <slot name="footer"></slot>
@@ -25,9 +25,6 @@
   <script>
     Polymer({
       is: 'mtz-marked-editor',
-      // TODO: Implement Form Behaviors
-      //   Polymer.IronFormElementBehavior,
-      //   Polymer.IronValidatableBehavior,
       properties: {
         autofocus: Boolean,
         readonly: Boolean,
@@ -53,6 +50,13 @@
        */
       getTextarea() {
         return this.__textarea;
+      },
+      /**
+       * Returns the number of lines in the textarea
+       * @return {Number}
+       */
+      getLines() {
+        return this.getContent().split(/(?=\n|\r\n)$/gm);
       },
       /**
        * Gets the content of the textarea
@@ -113,7 +117,7 @@
       __bindControlToEditor(event) {
         event.stopPropagation();
         // TODO: Update this in 2.0 to use updated API.
-        // Polymer.dom(event).rootTarget => event.composedPath()[0] 
+        // Polymer.dom(event).rootTarget => event.composedPath()[0]
         Polymer.dom(event).rootTarget.__editor = this;
       },
       // TODO: Add showEditor, hideEditor
