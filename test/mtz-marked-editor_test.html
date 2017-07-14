@@ -24,9 +24,10 @@
       describe('mtz-marked-editor', () => {
         let element, parent;
 
-        beforeEach(() => {
+        beforeEach((done) => {
           element = fixture('basic');
           parent = element.parentNode;
+          flush(done);
         });
 
         /* Sanity Check */

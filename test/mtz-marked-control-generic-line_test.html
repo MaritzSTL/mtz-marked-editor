@@ -37,9 +37,10 @@
       describe('mtz-marked-control-generic-line', () => {
         let element, parent;
 
-        beforeEach(() => {
+        beforeEach((done) => {
           element = fixture('basic');
           parent = element.parentNode;
+          flush(done);
         });
 
         /* Sanity Check */
@@ -181,11 +182,8 @@
               it('should put the cursor between the syntax prefix and suffix', () => {
                 expect(parent.getSelection().text).to.equal('> The quick brown fox ');
               });
-              it('should focus the editor', (done) => {
-                flush(() => {
-                  expect(parent.querySelector(':focus')).to.be.ok;
-                  done();
-                });
+              it('should focus the editor', () => {
+                expect(parent.querySelector(':focus')).to.be.ok;
               });
             });
           });

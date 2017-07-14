@@ -38,9 +38,10 @@
       describe('mtz-marked-control-generic-wrap', () => {
         let element, parent;
 
-        beforeEach(() => {
+        beforeEach((done) => {
           element = fixture('basic');
           parent = element.parentNode;
+          flush(done);
         });
 
         /* Sanity Check */
@@ -103,7 +104,7 @@
                 parent.setContent(baseMsg);
                 parent.setSelection(12, 21);
                 element._handleCommand(evt);
-              });  
+              });
               it('should remove the syntax', () => {
                 expect(parent.getContent()).to.equal(assertMsg);
               });
