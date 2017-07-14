@@ -13,10 +13,8 @@ install:
   - polymer install --variants
 before_script:
   - polymer lint --input *.html
-  - sh -e /etc/init.d/xvfb start
-  - sleep 3 # Wait for xvfb to start
 script:
-  - xvfb-run polymer test
+  - xvfb-run polymer test -w 3
 #  - >-
 #    if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then polymer test -s 'default';
 #    fi
