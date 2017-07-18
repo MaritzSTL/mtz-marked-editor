@@ -14,7 +14,7 @@
       syntaxPrefix: String, // Must implement
       syntaxSuffix: { // Optionally implement
         type: String,
-        value: ''
+        value: '',
       },
     },
     /**
@@ -27,9 +27,9 @@
       event.stopPropagation();
 
       let cursor = 0;
-      const editor = this.__editor,
-            selected = editor.getSelection(),
-            content = editor.getContent();
+      const editor = this.__editor;
+      const selected = editor.getSelection();
+      const content = editor.getContent();
 
       // Toggle syntax
       if (content.substr(selected.start - this.syntaxPrefix.length, this.syntaxPrefix.length) === this.syntaxPrefix &&
@@ -45,7 +45,7 @@
       // Set Cursor location
       editor.setSelection(cursor, cursor + selected.text.length);
       editor.getTextarea().focus();
-    }
+    },
   };
 
   /* @polymerBehavior */

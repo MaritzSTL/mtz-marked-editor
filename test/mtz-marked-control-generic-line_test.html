@@ -77,7 +77,7 @@
             parent.setContent(baseMsg);
 
             evt = new MouseEvent('click', {
-              button: 0
+              button: 0,
             });
             sinon.spy(evt, 'preventDefault');
             sinon.spy(evt, 'stopPropagation');
@@ -174,7 +174,7 @@
                 expect(parent.getTextarea().focus).to.have.been.called;
               });
             });
-             describe('and no selection is made (cursor)', () => {
+            describe('and no selection is made (cursor)', () => {
               beforeEach(() => {
                 assertMsg = '> The quick brown fox \njumps over the lazy dog';
                 parent.setSelection(12, 12);

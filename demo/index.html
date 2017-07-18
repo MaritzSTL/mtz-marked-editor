@@ -14,6 +14,7 @@
     <link rel="import" href="../mtz-marked-editor.html">
     <link rel="import" href="../mtz-marked-control-generic-wrap.html">
     <link rel="import" href="../mtz-marked-control-generic-line.html">
+    <link rel="import" href="../controls/mtz-marked-control-link.html">
 
     <style is="custom-style" include="demo-pages-shared-styles">
     </style>
@@ -54,6 +55,10 @@
                 title="Unordered List"
                 syntax-prefix="- "
               ></mtz-marked-control-generic-line>
+              <mtz-marked-control-link
+                icon="editor:insert-link"
+                title="Link"
+              ></mtz-marked-control-link>
             </div>
             <textarea slot="textarea"></textarea>
           </mtz-marked-editor>

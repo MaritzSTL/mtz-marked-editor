@@ -19,7 +19,7 @@
       on-click="_handleCommand"
       alt="[[title]]"
     ></paper-icon-button>
-    
+
     <iron-a11y-keys
       keys="[[keys]]"
       on-keys-pressed="_handleCommand"
@@ -30,14 +30,14 @@
     Polymer({
       is: 'mtz-marked-control-generic-wrap',
       behaviors: [
-        mtz.MarkedControlWrapperBehavior
+        mtz.MarkedControlWrapperBehavior,
       ],
       properties: {
         title: String,
         icon: String,
         keys: String,
         noink: Boolean, // Pass-through
-      }
+      },
     });
   </script>
 </dom-module>
