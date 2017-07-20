@@ -40,7 +40,6 @@
        * Toggles a syntax prefix at the start of selected lines
        *
        * @param {MouseEvent|KeyboardEvent} event
-       * @return {undefined}
        * @protected
        */
       _handleCommand(event) {
@@ -75,7 +74,8 @@
           }
 
           if (link.startsWith('http://')) {
-            return alert('Links must be https://');
+            alert('Links must be https://');
+            return;
           }
 
           const newLink = regex[Symbol.replace]('[]()', `[${text}](${link})`);
