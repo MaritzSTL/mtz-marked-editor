@@ -4,11 +4,10 @@
 
 <!--
 `mtz-marked-editor`
-
+Creates a textarea with common editor logic and can be controlled by UI elements
 
 @demo demo/index.html
 -->
-
 <dom-module id="mtz-marked-editor">
   <template>
     <style>
@@ -30,9 +29,9 @@
         readonly: Boolean,
         textareaSelector: {
           type: String,
-          value: 'textarea'
+          value: 'textarea',
         },
-       __textarea: Object
+        __textarea: Object,
       },
       ready() {
         this.__bindControlToEditor = this.__bindControlToEditor.bind(this);
@@ -79,13 +78,13 @@
        * @return {Object} Containing selection information, start, end, text, and length.
        */
       getSelection(textarea = this.getTextarea()) {
-        const start = textarea.selectionStart,
-              end = textarea.selectionEnd;
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
         return {
           start,
           end,
           length: end - start,
-          text: textarea.value.substring(start, end)
+          text: textarea.value.substring(start, end),
         };
       },
       /**
@@ -120,7 +119,6 @@
         // Polymer.dom(event).rootTarget => event.composedPath()[0]
         Polymer.dom(event).rootTarget.__editor = this;
       },
-      // TODO: Add showEditor, hideEditor
     });
   </script>
 </dom-module>

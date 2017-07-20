@@ -11,7 +11,7 @@
    */
   mtz.MarkedControlLineBehaviorImpl = {
     properties: {
-      syntaxPrefix: String // Must implement
+      syntaxPrefix: String, // Must implement
     },
     /**
      * Toggles a syntax prefix at the start of selected lines
@@ -22,9 +22,9 @@
       event.preventDefault();
       event.stopPropagation();
 
-      const editor = this.__editor,
-            selection = editor.getSelection(),
-            lines = editor.getLines();
+      const editor = this.__editor;
+      const selection = editor.getSelection();
+      const lines = editor.getLines();
 
       // Grab the newline char
       const newlineChar = lines.length > 1 ? lines[1].match(/(\n|\r\n)/)[0] : '';
@@ -36,7 +36,7 @@
         // Accumulate line
         accumulator += line.length;
         // Check if selection start is not within the line, skip to next line
-        if (accumulator+1 < selection.start) {
+        if (accumulator + 1 < selection.start) {
           return true;
         }
         // Line is part of selection or contains selection start, so let's grab it
@@ -44,15 +44,15 @@
           start: accumulator - line.length,
           end: accumulator,
           length: line.length,
-          text: line.trimLeft()
+          text: line.trimLeft(),
         });
         // Stop grabbing lines if we reach the end of the selection
         return (accumulator < selection.end);
       });
 
       // Check the first line for syntax
-      const firstLine = selectedLines[0],
-            removeSyntax = firstLine.text.startsWith(this.syntaxPrefix);
+      const firstLine = selectedLines[0];
+      const removeSyntax = firstLine.text.startsWith(this.syntaxPrefix);
 
       let offset = 0;
       // Toggle syntax on each line
@@ -82,7 +82,7 @@
       // Re-select the new content on the lines
       editor.setSelection(firstLine.start, lastLine.end + ((!removeSyntax ? 1 : -1) * offset));
       editor.getTextarea().focus();
-    }
+    },
   };
 
   /* @polymerBehavior */

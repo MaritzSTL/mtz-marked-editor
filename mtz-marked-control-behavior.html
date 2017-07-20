@@ -11,7 +11,7 @@
   mtz.MarkedControlBehavior = {
     properties: {
       /* Reference to the editor. Set programatically */
-      __editor: Object
+      __editor: Object,
     },
     /**
      * Registers the control with the editor to obtain the editor instance
@@ -20,8 +20,8 @@
     attached() {
       this.dispatchEvent(new CustomEvent('register-control', {
         bubbles: true,
-        composed: true
+        composed: true,
       }));
-    }
-  }
+    },
+  };
 </script>
