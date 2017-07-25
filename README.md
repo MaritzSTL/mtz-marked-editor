@@ -1,3 +1,6 @@
+[![Build Status](https://img.shields.io/travis/MaritzSTL/mtz-marked-editor/master.svg?style=flat-square)](https://travis-ci.org/MaritzSTL/mtz-marked-editor)
+[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg?style=flat-square)](https://www.webcomponents.org/element/MaritzSTL/mtz-marked-editor)
+
 # \<mtz-marked-editor\>
 Extends a textarea that can be controlled by UI elements for inserting markdown.
 
