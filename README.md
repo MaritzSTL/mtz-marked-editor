@@ -8,7 +8,7 @@ Extends a textarea that can be controlled by UI elements for inserting markdown.
 ```
 <custom-element-demo>
   <template>
-    <link rel="import" href="../iron-icons/iron-icons.html">
+    <link rel="import" href="../iron-icons/editor-icons.html">
     <link rel="import" href="mtz-marked-editor.html">
     <link rel="import" href="mtz-marked-control-generic-line.html">
     <link rel="import" href="mtz-marked-control-generic-wrap.html">
