@@ -62,7 +62,10 @@ Creates a textarea with common editor logic and can be controlled by UI elements
        * @return {String}
        */
       getContent() {
-        return this.getTextarea().value;
+        if (typeof this.getTextarea() !== typeof undefined) {
+          return this.getTextarea().value;
+        }
+        return '';
       },
       /**
        * Sets the content of the textarea
